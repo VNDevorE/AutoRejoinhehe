@@ -1,0 +1,30 @@
+# Logs directory
+*.log
+logs/
+*.pyc
+__pycache__/
+
+# Screenshots
+screenshots/
+*.png
+*.jpg
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+nohup.out

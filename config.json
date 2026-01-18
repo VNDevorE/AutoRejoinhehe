@@ -1,0 +1,10 @@
+{
+  "game_id": "1554960397",
+  "check_interval": 30,
+  "max_retries": 5,
+  "retry_delay": 10,
+  "roblox_package": "com.roblox.client",
+  "log_level": "INFO",
+  "screenshot_on_error": true,
+  "notification_enabled": false
+}
