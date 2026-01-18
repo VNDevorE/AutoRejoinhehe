@@ -20,33 +20,14 @@ Tool tự động vào lại game Roblox khi bị disconnect hoặc crash. Chạ
 - Roblox app đã cài đặt
 - Python 3.x
 
-## 🚀 Cài đặt
-
-### Bước 1: Cài đặt Termux
-
-1. Tải Termux từ F-Droid hoặc GitHub
-2. Mở Termux
-
-### Bước 2: Root Termux
-
+### Bước 1: Cài đặt môi trường
 ```bash
-# Cấp quyền root cho Termux
-su
+pkg update -y && pkg upgrade -y && pkg install python curl git -y
 ```
 
-### Bước 3: Chạy Setup Script
-
+### Bước 2: Tải và chạy setup tool
 ```bash
-# Download và chạy setup
-curl -O https://raw.githubusercontent.com/VNDevorE/AutoRejoinhehe/main/setup.sh
-bash setup.sh
-```
-
-Hoặc nếu đã có source code:
-
-```bash
-cd /sdcard/Download/AutoRejoin
-bash setup.sh
+curl -LO https://raw.githubusercontent.com/VNDevorE/AutoRejoinhehe/main/setup.sh && bash setup.sh
 ```
 
 ### Bước 4: Cấu hình (Optional)
