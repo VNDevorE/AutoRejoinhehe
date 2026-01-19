@@ -48,15 +48,19 @@ Chỉnh sửa `config.json` nếu cần:
 
 ### Chạy tool
 
+**Cách 1: Chạy với quyền Root (Khuyên dùng cho Termux)**
 ```bash
-# Cách 1: Dùng run script
-bash run.sh
+su -c "PATH=$PATH python autorejoin.py"
+```
 
-# Cách 2: Chạy trực tiếp
-su -c "cd /sdcard/Download/AutoRejoin && python autorejoin.py"
+**Cách 2: Chạy trực tiếp (Nếu đã su trước đó)**
+```bash
+python autorejoin.py
+```
 
-# Cách 3: Chạy trong background
-nohup bash run.sh > /dev/null 2>&1 &
+**Cách 3: Chạy trong background**
+```bash
+nohup su -c "PATH=$PATH python autorejoin.py" > /dev/null 2>&1 &
 ```
 
 ### Dừng tool

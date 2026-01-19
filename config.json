@@ -1,5 +1,6 @@
 {
   "game_id": "1554960397",
+  "vip_server_link": "https://www.roblox.com/share?code=777bd325ffe13444993608cbb761b7e2&type=Server",
   "check_interval": 30,
   "max_retries": 5,
   "retry_delay": 10,

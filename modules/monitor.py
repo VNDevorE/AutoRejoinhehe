@@ -30,7 +30,8 @@ class RobloxMonitor:
             self.logger,
             self.detector,
             config['roblox_package'],
-            config['game_id']
+            config['game_id'],
+            config.get('vip_server_link', '')
         )
         
         # State tracking

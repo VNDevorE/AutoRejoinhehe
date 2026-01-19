@@ -62,96 +62,31 @@ termux-change-repo
 # Chọn mirror gần nhất (thường là Mirrors by BFSU)
 # Nhấn Space để chọn, Enter để OK
 
-# Update packages
-pkg update -y && pkg upgrade -y
+```bash
+pkg update -y && pkg upgrade -y && pkg install python git android-tools -y
 ```
+#### Cách 1: Từ GitHub (NÊN DÙNG)
 
-### Bước 6: Cài đặt Python và Git
+Nên cài vào thư mục gốc của Termux để tránh lỗi quyền (`Permission denied`):
 
 ```bash
-# Cài Python
-pkg install python -y
+# cài colormar
+pip install colorama
 
-# Cài Git
-pkg install git -y
-
-# Cài android-tools (ADB)
-pkg install android-tools -y
-```
-
-### Bước 7: Download AutoRejoin Tool
-
-#### Cách 1: Từ GitHub (nếu có)
-
-```bash
-cd /sdcard/Download
+# Clone code
 git clone https://github.com/VNDevorE/AutoRejoinhehe.git
-cd AutoRejoin
-```
 
-#### Cách 2: Upload thủ công
-
-1. Copy toàn bộ folder `AutoRejoin` vào `/sdcard/Download/` của cloud phone
-2. Trong Termux:
-
-```bash
-cd /sdcard/Download/AutoRejoin
-```
-
-### Bước 8: Chạy Setup Script
-
-```bash
-# Cấp quyền execute cho script
-chmod +x setup.sh
-chmod +x run.sh
-
-# Chạy setup
-bash setup.sh
-```
-
-Script sẽ tự động:
-- Cài đặt Python packages
-- Tạo thư mục logs
-- Setup môi trường
-
-### Bước 9: Kiểm tra cài đặt
-
-```bash
-# Kiểm tra Python
-python --version
-# Kết quả: Python 3.x.x
-
-# Kiểm tra pip
-pip --version
-
-# Kiểm tra colorama
-python -c "import colorama; print('OK')"
-# Kết quả: OK
-```
-
-### Bước 10: Cấu hình Game ID (Optional)
-
-Nếu muốn đổi game ID:
-
-```bash
-# Mở file config
-nano config.json
-
-# Sửa game_id thành ID game bạn muốn
-# Nhấn Ctrl+X, sau đó Y, sau đó Enter để lưu
+# Vào thư mục
+cd AutoRejoinhehe
 ```
 
 ### Bước 11: Chạy tool lần đầu
 
-```bash
-# Chạy với quyền root
-bash run.sh
-```
+Nên chạy bằng lệnh này để đảm bảo quyền root nhận diện đúng Python:
 
-Hoặc:
-
+Hoặc nếu bạn đã gõ `su` trước đó (dấu `#`):
 ```bash
-su -c "cd /sdcard/Download/AutoRejoin && python autorejoin.py"
+PATH=$PATH python autorejoin.py
 ```
 
 ## ✅ Kiểm tra hoạt động
@@ -247,15 +182,21 @@ screen -r autorejoin
 # Sau đó nhấn Ctrl+C
 ```
 
-## 🐛 Xử lý lỗi thường gặp
+### Lỗi 6: Máy không thể Root (Non-Root)
 
-### Lỗi 1: "su: not found"
+**Triệu chứng**: Chạy tool báo lỗi `Permission denied` hoặc không thể thực hiện các thao tác `tap`, `swipe`.
 
-**Nguyên nhân**: Cloud phone chưa root
+**Giải thích**: Tool cần quyền Root để điều khiển một app khác (Roblox). Nếu không có Root, Termux bị chặn không cho can thiệp vào app ngoài.
 
-**Giải pháp**: 
-- Liên hệ support cloud phone để xin root
-- Hoặc dùng app root như Magisk (Android thật)
+**Giải pháp (Dành cho máy thật)**:
+1.  Bật **Developer Options** (Tùy chọn nhà phát triển) trên điện thoại.
+2.  Bật **Wireless Debugging** (Gỡ lỗi không dây).
+3.  Cài đặt `android-tools` trong Termux: `pkg install android-tools`.
+4.  Dùng lệnh `adb connect` để kết nối Termux với chính nó (localhost).
+5.  Khi đã kết nối ADB thành công, tool có thể chạy thông qua ADB shell mà không cần Root.
+
+**Lưu ý cho Cloud Phone**:
+Hầu hết Cloud Phone (UGPhone, VSPhone) đều có mục cài đặt để **Bật Root**. Bạn hãy kiểm tra trong phần cài đặt của máy cloud đó. Nếu cloud phone hoàn toàn không cho Root, tool này hiện tại **chưa hỗ trợ** hoàn hảo.
 
 ### Lỗi 2: "python: command not found"
 

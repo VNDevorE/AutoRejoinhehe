@@ -14,12 +14,13 @@ class RobloxLauncher:
     """Launches Roblox and joins games"""
     
     def __init__(self, adb: ADBHelper, logger: ColoredLogger, detector: RobloxDetector, 
-                 package_name: str, game_id: str):
+                 package_name: str, game_id: str, vip_server_link: str = ""):
         self.adb = adb
         self.logger = logger
         self.detector = detector
         self.package_name = package_name
         self.game_id = game_id
+        self.vip_server_link = vip_server_link
     
     def kill_roblox(self) -> bool:
         """
@@ -61,20 +62,24 @@ class RobloxLauncher:
     def join_game_via_deeplink(self) -> bool:
         """
         Join game using deep link (most reliable method)
+        Supports both regular game ID and VIP server links
         
         Returns:
             True if successful
         """
-        self.logger.info(f"Joining game {self.game_id} via deep link...")
+        # Check if VIP server link is provided
+        if self.vip_server_link:
+            self.logger.info(f"Joining VIP server via link...")
+            link_to_open = self.vip_server_link
+        else:
+            self.logger.info(f"Joining game {self.game_id} via deep link...")
+            link_to_open = f"roblox://placeId={self.game_id}"
         
-        # Construct Roblox deep link
-        deep_link = f"roblox://placeId={self.game_id}"
-        
-        # Open deep link
-        success = self.adb.open_url(deep_link)
+        # Open link (works for both deep links and web links)
+        success = self.adb.open_url(link_to_open)
         
         if success:
-            self.logger.success(f"Deep link opened: {deep_link}")
+            self.logger.success(f"Link opened: {link_to_open}")
             
             # Wait for game to load
             self.logger.status("Waiting for game to load...")
