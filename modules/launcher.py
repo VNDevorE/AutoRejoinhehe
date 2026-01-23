@@ -4,7 +4,9 @@ Handles launching Roblox and joining games
 """
 
 import time
+import re
 from typing import Optional
+from urllib.parse import urlparse, parse_qs
 from .adb_helper import ADBHelper
 from .logger import ColoredLogger
 from .detector import RobloxDetector
@@ -59,6 +61,77 @@ class RobloxLauncher:
             self.logger.error("Failed to launch Roblox")
             return False
     
+    def _parse_vip_server_link(self, link: str) -> str:
+        """
+        Parse VIP server link and convert to direct share link format
+        
+        Converts links like:
+        - https://ro.blox.com/Ebh5?...&af_web_dp=https://www.roblox.com/share-links?code=XXX&type=Server
+        - https://www.roblox.com/share-links?code=XXX&type=Server
+        
+        To:
+        - https://www.roblox.com/share?code=XXX&type=Server
+        
+        Args:
+            link: VIP server link (any format)
+            
+        Returns:
+            Direct share link that opens game immediately
+        """
+        try:
+            # Method 1: Extract from af_web_dp parameter (for ro.blox.com links)
+            if 'ro.blox.com' in link or 'af_web_dp=' in link:
+                self.logger.debug("Detected ro.blox.com link, extracting server code...")
+                
+                # Find af_web_dp parameter
+                match = re.search(r'af_web_dp=([^&]+)', link)
+                if match:
+                    # URL decode the parameter
+                    import urllib.parse
+                    web_link = urllib.parse.unquote(match.group(1))
+                    self.logger.debug(f"Extracted web link: {web_link}")
+                    
+                    # Extract code from the web link
+                    code_match = re.search(r'code=([^&]+)', web_link)
+                    if code_match:
+                        server_code = code_match.group(1)
+                        direct_link = f"https://www.roblox.com/share?code={server_code}&type=Server"
+                        self.logger.success(f"Converted to direct link: {direct_link}")
+                        return direct_link
+            
+            # Method 2: Extract from deep_link_value parameter
+            if 'deep_link_value=' in link:
+                match = re.search(r'code=([^&%]+)', link)
+                if match:
+                    server_code = match.group(1)
+                    direct_link = f"https://www.roblox.com/share?code={server_code}&type=Server"
+                    self.logger.success(f"Converted to direct link: {direct_link}")
+                    return direct_link
+            
+            # Method 3: Already in share-links format, convert to share format
+            if 'share-links' in link:
+                self.logger.debug("Converting share-links to share format...")
+                code_match = re.search(r'code=([^&]+)', link)
+                if code_match:
+                    server_code = code_match.group(1)
+                    direct_link = f"https://www.roblox.com/share?code={server_code}&type=Server"
+                    self.logger.success(f"Converted to direct link: {direct_link}")
+                    return direct_link
+            
+            # Method 4: Already in correct format
+            if 'www.roblox.com/share?' in link and 'code=' in link:
+                self.logger.debug("Link already in correct format")
+                return link
+            
+            # If all methods fail, return original link
+            self.logger.warning(f"Could not parse VIP link, using original: {link}")
+            return link
+            
+        except Exception as e:
+            self.logger.error(f"Error parsing VIP link: {e}")
+            return link
+
+    
     def join_game_via_deeplink(self) -> bool:
         """
         Join game using deep link (most reliable method)
@@ -70,7 +143,8 @@ class RobloxLauncher:
         # Check if VIP server link is provided
         if self.vip_server_link:
             self.logger.info(f"Joining VIP server via link...")
-            link_to_open = self.vip_server_link
+            # Parse and convert VIP link to direct format
+            link_to_open = self._parse_vip_server_link(self.vip_server_link)
         else:
             self.logger.info(f"Joining game {self.game_id} via deep link...")
             link_to_open = f"roblox://placeId={self.game_id}"
