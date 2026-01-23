@@ -63,22 +63,24 @@ class RobloxLauncher:
     
     def _parse_vip_server_link(self, link: str) -> str:
         """
-        Parse VIP server link and convert to direct share link format
+        Parse VIP server link and convert to Roblox deep link format
         
         Converts links like:
         - https://ro.blox.com/Ebh5?...&af_web_dp=https://www.roblox.com/share-links?code=XXX&type=Server
         - https://www.roblox.com/share-links?code=XXX&type=Server
         
         To:
-        - https://www.roblox.com/share?code=XXX&type=Server
+        - roblox://navigation/share_links?code=XXX&type=Server
         
         Args:
             link: VIP server link (any format)
             
         Returns:
-            Direct share link that opens game immediately
+            Roblox deep link that the app can handle
         """
         try:
+            server_code = None
+            
             # Method 1: Extract from af_web_dp parameter (for ro.blox.com links)
             if 'ro.blox.com' in link or 'af_web_dp=' in link:
                 self.logger.debug("Detected ro.blox.com link, extracting server code...")
@@ -95,32 +97,29 @@ class RobloxLauncher:
                     code_match = re.search(r'code=([^&]+)', web_link)
                     if code_match:
                         server_code = code_match.group(1)
-                        direct_link = f"https://www.roblox.com/share?code={server_code}&type=Server"
-                        self.logger.success(f"Converted to direct link: {direct_link}")
-                        return direct_link
             
             # Method 2: Extract from deep_link_value parameter
-            if 'deep_link_value=' in link:
+            if not server_code and 'deep_link_value=' in link:
                 match = re.search(r'code=([^&%]+)', link)
                 if match:
                     server_code = match.group(1)
-                    direct_link = f"https://www.roblox.com/share?code={server_code}&type=Server"
-                    self.logger.success(f"Converted to direct link: {direct_link}")
-                    return direct_link
             
-            # Method 3: Already in share-links format, convert to share format
-            if 'share-links' in link:
-                self.logger.debug("Converting share-links to share format...")
+            # Method 3: Already in share-links or share format
+            if not server_code and ('share-links' in link or '/share?' in link):
+                self.logger.debug("Extracting from share link...")
                 code_match = re.search(r'code=([^&]+)', link)
                 if code_match:
                     server_code = code_match.group(1)
-                    direct_link = f"https://www.roblox.com/share?code={server_code}&type=Server"
-                    self.logger.success(f"Converted to direct link: {direct_link}")
-                    return direct_link
             
-            # Method 4: Already in correct format
-            if 'www.roblox.com/share?' in link and 'code=' in link:
-                self.logger.debug("Link already in correct format")
+            # If we found a server code, convert to deep link
+            if server_code:
+                deep_link = f"roblox://navigation/share_links?code={server_code}&type=Server"
+                self.logger.success(f"Converted to deep link: {deep_link}")
+                return deep_link
+            
+            # Method 4: Already in roblox:// format
+            if link.startswith('roblox://'):
+                self.logger.debug("Link already in deep link format")
                 return link
             
             # If all methods fail, return original link
