@@ -33,9 +33,9 @@ def load_config(config_path: str = "config.json") -> dict:
         sys.exit(1)
 
 
-def setup_game_config() -> dict:
+def prompt_game_info() -> dict:
     """
-    Interactive setup for game configuration
+    Prompt user for game information every time the tool runs
     
     Returns:
         Game configuration dictionary
@@ -59,7 +59,7 @@ def setup_game_config() -> dict:
             if vip_link:
                 game_config['vip_server_link'] = vip_link
                 game_config['game_id'] = ""  # Not needed when using VIP link
-                print(f"\n✅ Đã lưu VIP server link!")
+                print(f"\n✅ Sẽ vào VIP server!")
                 break
             else:
                 print("❌ Link không được để trống! Vui lòng thử lại.\n")
@@ -72,7 +72,7 @@ def setup_game_config() -> dict:
             if game_id:
                 game_config['game_id'] = game_id
                 game_config['vip_server_link'] = ""
-                print(f"\n✅ Đã lưu Game ID: {game_id}")
+                print(f"\n✅ Sẽ vào game ID: {game_id}")
                 break
             else:
                 print("❌ Game ID không được để trống! Vui lòng thử lại.\n")
@@ -80,39 +80,10 @@ def setup_game_config() -> dict:
         else:
             print("❌ Vui lòng nhập Y hoặc N!\n")
     
-    # Save to game_config.json
-    try:
-        with open('game_config.json', 'w', encoding='utf-8') as f:
-            json.dump(game_config, f, indent=2, ensure_ascii=False)
-        print(f"\n💾 Đã lưu cấu hình vào game_config.json")
-    except Exception as e:
-        print(f"\n❌ Lỗi khi lưu config: {e}")
-        sys.exit(1)
-    
     print("="*60)
     print()
     
     return game_config
-
-
-def load_game_config() -> dict:
-    """
-    Load game configuration from game_config.json
-    If file doesn't exist, run interactive setup
-    
-    Returns:
-        Game configuration dictionary
-    """
-    if os.path.exists('game_config.json'):
-        try:
-            with open('game_config.json', 'r', encoding='utf-8') as f:
-                return json.load(f)
-        except json.JSONDecodeError:
-            print("⚠️  game_config.json bị lỗi, chạy lại setup...\n")
-            return setup_game_config()
-    else:
-        # First time setup
-        return setup_game_config()
 
 
 def print_banner():
@@ -139,8 +110,8 @@ def main():
     print("📋 Loading configuration...")
     config = load_config()
     
-    # Load or setup game configuration
-    game_config = load_game_config()
+    # Prompt for game information (every time)
+    game_config = prompt_game_info()
     
     # Merge configs
     config.update(game_config)

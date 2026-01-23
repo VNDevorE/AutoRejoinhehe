@@ -89,9 +89,9 @@ Hoặc nếu bạn đã gõ `su` trước đó (dấu `#`):
 PATH=$PATH python autorejoin.py
 ```
 
-### Bước 12: Thiết lập game (Interactive Setup)
+### Bước 12: Nhập thông tin game
 
-Khi chạy lần đầu, tool sẽ hỏi bạn:
+**MỖI LẦN CHẠY TOOL**, bạn sẽ được hỏi:
 
 ```
 ============================================================
@@ -110,8 +110,7 @@ Khi chạy lần đầu, tool sẽ hỏi bạn:
    (Ví dụ: https://ro.blox.com/... hoặc https://www.roblox.com/share?code=...)
 👉 Link: [paste link của bạn]
 
-✅ Đã lưu VIP server link!
-💾 Đã lưu cấu hình vào game_config.json
+✅ Sẽ vào VIP server!
 ```
 
 #### Nếu không có VIP Server (chọn N):
@@ -123,27 +122,13 @@ Khi chạy lần đầu, tool sẽ hỏi bạn:
    (Ví dụ: 1554960397)
 👉 Game ID: 1554960397
 
-✅ Đã lưu Game ID: 1554960397
-💾 Đã lưu cấu hình vào game_config.json
+✅ Sẽ vào game ID: 1554960397
 ```
 
-> **💡 Lưu ý quan trọng:**
-> - File `game_config.json` được tạo **LOCAL** trên cloud phone của bạn
-> - **KHÔNG** cần push lên Git
-> - Mỗi cloud phone có thể chạy game khác nhau
-> - Muốn đổi game? Xóa `game_config.json` và chạy lại tool!
-
-### Bước 13: Đổi game (nếu cần)
-
-Để chuyển sang game khác:
-
-```bash
-# Xóa config cũ
-rm game_config.json
-
-# Chạy lại tool, nó sẽ hỏi setup game mới
-PATH=$PATH python autorejoin.py
-```
+> **💡 Lưu ý:**
+> - Tool **KHÔNG LƯU** thông tin game
+> - Mỗi lần chạy lại sẽ hỏi lại
+> - Tiện cho việc đổi game nhanh chóng
 
 ## ✅ Kiểm tra hoạt động
 
@@ -155,6 +140,16 @@ Tool sẽ hiển thị:
 ╚═══════════════════════════════════════════════════════════╝
 
 📋 Loading configuration...
+
+============================================================
+🎮  THIẾT LẬP GAME
+============================================================
+
+❓ Bạn có VIP server không? (Y/N): Y
+...
+✅ Sẽ vào VIP server!
+============================================================
+
 ✓ VIP Server: Đã cấu hình
 ✓ Check Interval: 30s
 ✓ Max Retries: 5
@@ -164,18 +159,3 @@ Tool sẽ hiển thị:
 [09:00:10] [SUCCESS] ✓ Successfully joined game!
 ```
 
-## 🔄 Quản lý nhiều game
-
-**Tình huống:** Bạn có 5 cloud phone, mỗi phone chạy 1 game khác nhau
-
-**Giải pháp:**
-1. Clone repo trên tất cả cloud phone
-2. Mỗi phone chạy `python autorejoin.py`
-3. Nhập game ID hoặc VIP link riêng cho từng phone
-4. Mỗi phone có `game_config.json` riêng → Không conflict!
-
-**Ưu điểm:**
-- ✅ Không cần edit code
-- ✅ Không cần push Git mỗi lần đổi game
-- ✅ Setup nhanh chóng
-- ✅ Dễ quản lý
