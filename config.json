@@ -1,6 +1,4 @@
 {
-  "game_id": "86089763581353",
-  "vip_server_link": "",
   "check_interval": 30,
   "max_retries": 5,
   "retry_delay": 10,
