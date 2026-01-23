@@ -123,17 +123,24 @@ class ADBHelper:
         time.sleep(2)
         return self.is_package_running(package_name)
     
-    def open_url(self, url: str) -> bool:
+    def open_url(self, url: str, package_name: Optional[str] = None) -> bool:
         """
         Open URL with intent
         
         Args:
-            url: URL to open (e.g., roblox://placeId=123)
+            url: URL to open (e.g., roblox://placeId=123 or https://www.roblox.com/share?...)
+            package_name: Optional package to force open with (e.g., com.roblox.client)
             
         Returns:
             True if successful
         """
-        cmd = f"am start -a android.intent.action.VIEW -d '{url}'"
+        if package_name:
+            # Force open with specific package (prevents opening in browser)
+            cmd = f"am start -a android.intent.action.VIEW -d '{url}' -p {package_name}"
+        else:
+            # Let Android choose the app
+            cmd = f"am start -a android.intent.action.VIEW -d '{url}'"
+        
         output = self.shell_command(cmd)
         time.sleep(3)
         return output is not None

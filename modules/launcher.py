@@ -150,7 +150,8 @@ class RobloxLauncher:
             link_to_open = f"roblox://placeId={self.game_id}"
         
         # Open link (works for both deep links and web links)
-        success = self.adb.open_url(link_to_open)
+        # Force open with Roblox package to prevent opening in browser
+        success = self.adb.open_url(link_to_open, package_name=self.package_name)
         
         if success:
             self.logger.success(f"Link opened: {link_to_open}")
